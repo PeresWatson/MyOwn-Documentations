@@ -45,22 +45,27 @@ Project Settings → Your Apps → Android App
 
 11. Paste the copied SHA-1 fingerprint and save.
 
-12. Rebuild the Flutter project by running:
+12. Download the updated google-services.json file if Firebase requests it.
+
+13. Replace the old file inside from the path as shown below:
+     "android/app/google-services.json"
+
+14. Rebuild the Flutter project by running:
        --> flutter clean
        --> flutter pub get
        --> flutter run
 
 ---------------> Part 3 :  Firebasse Initilization
-13.instal the following packages by commands:
+15.instal the following packages by commands:
        flutter pub add firebase_core
        flutter pub add firebase_auth
    
-14. In main.dart add this code after widget initialization:
+16. In main.dart add this code after widget initialization:
          await Firebase.initializeApp(
            options: DefaultFirebaseOptions.currentPlatform,
                     );
                     
-15. from that you can read documentaion or ask AI for snippets code for your desired task or feature such as:
+17. from that you can read documentaion or ask AI for snippets code for your desired task or feature such as:
                 * google email signup & signin
                 * authentication via sms otp
                 * firestorage or cloud storage
