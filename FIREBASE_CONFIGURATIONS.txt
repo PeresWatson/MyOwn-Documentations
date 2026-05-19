@@ -1,6 +1,4 @@
-
-
-*********** FIREBASE CONFIGURATION TO A FlUTTER APP USING FlutterFire CLI *******************
+********** FIREBASE CONFIGURATION TO A FlUTTER APP USING FlutterFire CLI *******************
 
 ----------------------> Part 1: Firebase Configuration and Connections
 
@@ -33,17 +31,36 @@
             gradlew signingReport
 
 
+6. Copy the SHA1 value from the terminal output.
+Example:    SHA1: AB:CD:EF:12:34:56:78:90...
+
+7. Go to Firebase Console
+
+8. Open your Firebase project.
+
+9. Navigate to:
+Project Settings → Your Apps → Android App
+
+10. Under SHA certificate fingerprints, click Add fingerprint.
+
+11. Paste the copied SHA-1 fingerprint and save.
+
+12. Rebuild the Flutter project by running:
+       --> flutter clean
+       --> flutter pub get
+       --> flutter run
+
 ---------------> Part 3 :  Firebasse Initilization
-6.instal the following packages by commands:
+13.instal the following packages by commands:
        flutter pub add firebase_core
        flutter pub add firebase_auth
    
-7. In main.dart add this code after widget initialization:
+14. In main.dart add this code after widget initialization:
          await Firebase.initializeApp(
            options: DefaultFirebaseOptions.currentPlatform,
                     );
                     
-6. from that you can read documentaion or ask AI for snippets code for your desired task or feature such as:
+15. from that you can read documentaion or ask AI for snippets code for your desired task or feature such as:
                 * google email signup & signin
                 * authentication via sms otp
                 * firestorage or cloud storage
