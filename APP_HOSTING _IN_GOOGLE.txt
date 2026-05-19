@@ -1,0 +1,192 @@
+
+*************############ APP HOSTING IN GOOGLE PLAY CONSOLE#################**********************
+
+Refer offical documentaion on app release at : 
+         https://docs.flutter.dev/deployment/android#sign-the-app
+
+1. Go to your project folder via vscode IDE 
+2. make sure your app has launcher icon using :----> flutter_launcher_icons
+3. change app package ID or application ID to be unique rather than the existing one
+     *example: com.example.crm ------> com.albitech.crm
+     
+     *how:
+       (i) Go to android/app/build.gradle.kts and update the :--> 
+         android {
+             namespace = "com.albitech.crm" // Change this
+             defaultConfig {
+             applicationId = "com.albitech.crm" // Change this
+                                            ...
+                                  }
+                   }  
+       (ii) Go to android/app/src/main/kotlin/com/example/crm/MainActivity.kt  and change ID/package                                      
+                                                                         
+3. App Signing (Creating keystore file -- This is your app ID), do as follow:
+   (i) In linux or mac run command :
+      " keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload "
+   (ii) answer all qns as shown below:
+        >>>>>>>required input::
+        *Enter keystore password:  
+        *Re-enter new password: 
+        *Enter the distinguished name. Provide a single dot (.) to leave a sub-component empty or press ENTER to use the default value in braces.
+        *What is your first and last name?
+        [Unknown]:  Peres.watson
+        *What is the name of your organizational unit?
+        [Unknown]:  albitech
+        *What is the name of your organization?
+        [Unknown]:  albitech
+        *What is the name of your City or Locality?
+        [Unknown]:  daressalaam
+        *What is the name of your State or Province?
+        [Unknown]:  daressalaam
+        *What is the two-letter country code for this unit?
+        [Unknown]:  TZ
+        
+        >>>>resulted output::
+        *Is CN=Peres.watson, OU=albitech, O=albitech, L=daressalaam, ST=daressalaam, C=TZ correct?
+        [no]:  yes
+       *Generating 2,048 bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 10,000 days
+        for: CN=Peres.watson, OU=albitech, O=albitech, L=daressalaam, ST=daressalaam, C=TZ
+        [Storing /home/paschalcode/upload-keystore.jks]
+  
+   (iii)  It will create a file named "upload-keystore.jks" at path "/home/paschalcode/upload-keystore.jks"
+  
+   (iv)  Create a file named "key.properties" in folder "android" hence full path as "android/key.properties" with data  as:
+          storePassword=Imama.1909
+          keyPassword=Imama.1909
+          keyAlias=upload
+          storeFile=/home/paschalcode/upload-keystore.jks
+          
+   (iv)  Go to android/app/build.graddle.kts  and load and assign keystore value as :
+   
+     //------------------ At top -------------------- //
+     import java.util.Properties
+     import java.io.FileInputStream
+
+     val keystoreProperties = Properties()
+     val keystorePropertiesFile = rootProject.file("key.properties")
+     if (keystorePropertiesFile.exists()) {
+     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+     }
+     
+    //------------------ Within android{  }------------- //
+    
+      ******after top section within android{  }********
+       signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as String
+            }
+         }
+         
+      ******after bottom section within android{  }********
+       buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now,
+            // so `flutter run --release` works.
+            // signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+        }
+  
+4. Run command to release appbundle apk ready to be uploaded:---------->  
+              "  flutter build appbundle --release    " 
+    
+    
+    **insights**: when the appbundle is building, it connect your app with the keystore file ready to be released          
+   
+5. Go to " https://play.google.com/console "  then sigin to create your account if it is first time 
+
+7. After creating account then sigin upto home screen and click button "Create App"
+
+6. Fill the provided field:
+     *app name  --------------> name of app like "Mocargo Tz"   (it can be changed at future) 
+     *package name -----------> this is application ID, it found at android/app/build.gradle.kts under the
+                                defaultConfig {
+                                      applicationId "com.example.myapp"
+                                }
+     *Default language  ------> select your default language based on options available
+     *Select App or game ------> select based on type of your app
+     *Select Free or Paid -----> Free: means anyone can download your app for $0, but you can’t charge for the download later;
+                                         you must use ads or in-app purchases to make money.
+                                 Paid: requires users to pay an upfront price to install it, 
+                                 though you have the flexibility to make it free at a later date if you choose.
+                                 
+     *Accept all the declerations option ---> it includes (i) Developer Program Policies (ii) US export laws
+     *Finish by "Create App" buttons
+
+4. Register App package name  ---> click button "Android Developer Verification" and follow steps provided:
+                     *
+5. click create app button at the top
+
+6. Then it navigate you to a new page as DASHBOARD to configure more about your app as follow :
+   (i) Go to "Set up your app" which include several steps but mainly are described below"
+          *
+   
+   
+   
+  1. STORE lISTING DETAILS OF THE APP GOOGLE PLAY CONSOLE 
+  REQUIRED :  (i)   App name -----------------------------------> less than 30 words
+              (ii)  Short description --------------------------> less than 80 words
+              (iii) Full description----------------------------> less than 4000 words
+              (iv)  App icon 
+                    *This is your main identity logo.
+                    *dimension: 512 × 512 px
+                    *Format: PNG, JPEG
+                    *Size: less than 1MB
+                    *border radius: 30 px recomended
+                    *count: 1
+                    *status : Must
+                    
+              (v)   Feature graphic
+                    *This is your marketing banner.
+                    *dimension: 1024 × 500 px
+                    *Format: PNG, JPEG
+                    *Size: less than 15MB
+                    *border radius: 0 px 
+                    *count :1
+                    *status: Must
+                    
+              (vi)  Phone screenshots 
+                    *These are mobile phone's screenshot of your app so that user can preview them.
+                    *dimension: 1080 × 2400 px ( but has to range 320 - 3840 )
+                    *Format: PNG, JPEG
+                    *Size: less than 8MB
+                    *border radius: 0 px 
+                    *count : 2 - 8
+                    *status: Must
+                    
+             (vii) 7-inch tablet screenshots 
+                    *These are tablet's screenshot of your app so that user can preview them.
+                    *dimension: 1080 × 2400 px ( but has to range 320 - 3840 )
+                    *Format: PNG, JPEG
+                    *Size: less than 8MB
+                    *border radius: 0 px 
+                    *count : 2 - 8
+                    *status: Not Must
+              
+            (viii) 10-inch tablet screenshots 
+                    *These are tablet's screenshot of your app so that user can preview them.
+                    *dimension: 1080 × 2400 px ( but has to range 320 - 3840 )
+                    *Format: PNG, JPEG  
+                    *Size: less than 8MB
+                    *border radius: 0 px 
+                    *count : 2 - 8
+                    *status: Not Must
+                    
+ 2. Production and Release
+     (i) Click
+   
+*****************############# EDITING STORE LISTINGS OF HOSTED APP GOOGLE PLAY CONSOLE ##################********************************
+1. Editing the store listing details (logo, screenshots, description, etc.)
+      (i)   Go to Grow users > Store Presence > Store Listings
+      (ii)  Click editing arrow ( --> )
+      (iii) Edit what you want then submit for changes to be reviewed
+
+      
+*******************########### EDITING PRIVACY URL OF HOSTED APP GOOGLE PLAY CONSOLE #################************************************
+(i)  if you want new one, go to site: "  https://www.freeprivacypolicy.com/free-privacy-policy-generator/  "
+
+*******************########### EDITING PRIVACY URL OF HOSTED APP GOOGLE PLAY CONSOLE #################************************************
+  

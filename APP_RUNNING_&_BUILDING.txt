@@ -1,0 +1,104 @@
+################ FLUTTER BUILDING VIA CHROME WITHOUT CORS DOCUMENTATIONS  ########################
+
+  flutter run -d chrome --web-browser-flag "--disable-web-security" --web-browser-flag "--disable-features=CrossSiteDocumentBlockingIfIsolating"
+  
+  ***###with port specification:
+  flutter run -d chrome --web-port 8080 --web-browser-flag "--disable-web-security" --web-browser-flag "--disable-features=CrossSiteDocumentBlockingIfIsolating"
+  
+################ FLUTTER LOCAL BUILDING DOCUMENTATIONS  ###################################### 
+
+                        flutter build apk --release --split-per-abi
+
+### What happens internally
+* Flutter builds **separate APK per CPU**
+* Each APK contains:
+             * Only one native engine
+             * Only required binaries
+
+### Output :
+            app-arm64-v8a-release.apk
+            app-armeabi-v7a-release.apk
+            app-x86_64-release.apk
+
+### Result :
+            * 🚀 **40–60% size reduction**
+            * Device installs only what it needs
+            
+######################  FLUTTER ONLINE BUILDING DOCUMENTATIONS  #################################
+>>>> BUILDING APK BY GITHUB 
+    * create "main.yaml" file then code below
+    * add, commit change then push
+    * download your apk in ACTIONS tab
+
+
+name: Build APK
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          
+      - run: flutter pub get
+      
+      - run: flutter build apk --release --split-per-abi
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-apks
+          path: build/app/outputs/flutter-apk/*.apk
+Footer
+
+>>>>>BUILDING APK BY GITLAB
+       * create ".gitlab-ci.yml" file then code below
+       * add, commit change then push
+       * download your apk in BUILD > PIPELINES tab
+       
+
+image: ghcr.io/cirruslabs/flutter:stable
+
+stages:
+  - build
+
+variables:
+  FLUTTER_VERSION: '3.x'
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .pub-cache/
+    - build/
+
+before_script:
+  - flutter --version
+  - flutter pub get
+
+build-apk:
+  stage: build
+  script:
+    - flutter build apk --release --split-per-abi
+  artifacts:
+    name: "apk-${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+    paths:
+      - build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+      - build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+      - build/app/outputs/flutter-apk/app-x86_64-release.apk
+    expire_in: 30 days
+  only:
+    - main
+    - master
+    - develop
+    - /^feature/.*$/
+    - /^fix/.*$/
+  except:
+    - tags       

@@ -1,0 +1,70 @@
+
+*********######### HOW TO CHANGE APP BUNDLE NAME / PACKAGE NAME      ##########*************
+
+----------> in IOS
+
+ (i)   Go to "ios/Runner.xcodeproj/project.pbxproj"
+ (ii)  Find field "PRODUCT_BUNDLE_IDENTIFIER" or using shortcut "Ctrl + F"
+ (iii) Rename package/bundle name as you want but make sure :
+            *lowercase only
+            *no hyphen (-)
+            *no space between word
+            *connect words by dot (.)
+            >>>>>>>>>>>>>>>>>>>>>>>>>> Example:  cargo.mosimba.com
+            
+ (iv)  Then run following commands:
+          flutter clean
+          flutter pub get
+          cd ios
+          pod install
+          cd .. 
+ 
+----------> in ANDROID
+  (i)   Go to "android/app/build.gradle.kts"
+  (ii)  Find field "applicationId" and "namespace" or just using shortcut "Ctrl + F"
+  (iii) Then also Go to "android/app/src/main/kotlin/com/example/camber/MainActivity.kt"
+  (iv)  Find line written as "package com.mosimba.cargo" then update it as you want
+  (v)  Rename them as you want but consider restriction shown above
+  (vi) Then run the following commands:
+          flutter clean
+          flutter pub get
+  
+
+
+
+
+
+
+
+************############## HOW TO CHANGE APP DISPLAY NAME ###################*************
+
+------------------->in IOS
+
+ (i)   Go to "ios/Runner/Info.plist"
+ (ii)  Find the tags <key>CFBundleDisplayName</key>
+                     <string>You_app_name</string>
+ (iii) Then rename it  <key>CFBundleDisplayName</key>
+                       <string>Mo-Simba Cargo</string>  
+ (iv) Then run commands:
+             flutter clean
+             flutter pub get
+             
+-------------------> in ANDROID 
+ (i)   Go to "android/app/src/main/AndroidManifest.xml"
+ (ii)  Find ' line android:label="your_app_name" ' and then rename it
+ >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Example:  android:label="Mo-Simba Cargo"
+ (iii) Then run commands:
+               flutter clean
+               flutter pub get
+               
+
+
+
+
+
+
+
+
+
+
+

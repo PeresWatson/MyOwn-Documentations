@@ -1,0 +1,60 @@
+*********############  FLUTTER CHALLANGES FACED & THEIR SOLUTIONS #################*************
+1. my app has problem where by its navigation menu colide with phone navigation menu of 
+some phones, how to solve it
+
+return Scaffold(
+  // Use SafeArea here to protect the body content
+  body: SafeArea(
+    child: YourMainContentWidget(),
+  ),
+  // If your bottom menu is colliding, wrap it specifically
+  bottomNavigationBar: SafeArea(
+    child: MyNavigationMenu(),
+  ),
+);
+
+2.  i want my app only at bottom to have effects of SafeArea() and not at the top
+
+
+SafeArea(
+  top: false,      // Disables protection for the status bar/notch
+  left: false,     // Disables protection for side notches in landscape
+  right: false,    // Disables protection for side notches in landscape
+  bottom: true,    // Enables protection for the navigation bar/home indicator
+  child: YourNavigationWidget(), 
+)
+
+3.i want my app to have dynamic status bar that adapt app mode and phone mode of brightness
+
+ // This runs only once when widget is first created
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(Duration(seconds: 2), () {
+        Get.offAll(LoginPage());
+      });
+    });
+    
+    
+    MaterialApp(
+  theme: ThemeData(
+    appBarTheme: AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // Android
+        statusBarIconBrightness: Brightness.dark, // Android Icons
+        statusBarBrightness: Brightness.light, // iOS Background
+      ),
+    ),
+  ),
+  darkTheme: ThemeData(
+    appBarTheme: AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light, // Android Icons
+        statusBarBrightness: Brightness.dark, // iOS Background
+      ),
+    ),
+  ),
+  themeMode: themeController.isLightMode.value ? ThemeMode.light : ThemeMode.dark,
+  home: const MyHomeScreen(),
+);
+
+
